@@ -99,27 +99,27 @@ We can get an overview of these variables using the _summary_ and _plot_ functio
 
 summary(kois$Kepler.Disposition)
 
-plot(kois$Kepler.Disposition)
+plot(kois$Kepler.Disposition, ylim=c(-60,10))
 
 summary(kois$NExScI.Disposition)
 
-plot(kois$NExScI.Disposition)
+plot(kois$NExScI.Disposition, ylim=c(-60,10))
 
 summary(kois$KOI.count)
 
-plot(kois$KOI.count)
+plot(kois$KOI.count, ylim=c(-60,10))
 
 summary(kois$Duration)
 
-plot(kois$Duration)
+plot(kois$Duration, ylim=c(-60,10))
 
 summary(kois$Planet.Radius)
 
-plot(kois$Planet.Radius)
+plot(kois$Planet.Radius, ylim=c(-60,10))
 
 summary(kois$Transit.Number)
 
-plot(kois$Transit.Number)
+plot(kois$Transit.Number, ylim=c(-60,10))
 
 ```
 
