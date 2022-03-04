@@ -1,0 +1,199 @@
+---
+title: "03-R Markdown-demo"
+author: "Karl Benedict"
+date: "3/3/2022"
+output: 
+  html_document:
+    highlight: tango
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# R Markdown and R
+
+## Abstract
+
+Workshop tutorial with hands-on demonstration of Markdown, RStudio interface, and R Markdown structure and rendering.
+
+*keywords*: markdown, RStudio, R, literate computing
+
+## R Markdown Tips
+
+* [R Markdown Reference Guide](https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf?_ga=2.40279330.1638453532.1646345902-486230548.1646345902)
+
+R Markdown files are written and compiled into the target export format in a two step process. While in Jupyter notebooks you can render individual cells of Markdown text by "executing" them, with R Markdown you develop your R Markdown document and then render the whole document into one or more output files.
+
+R Markdown files are broken into chunks of Markdown and executable code, with the code code starting  with ```` ```{r}```` and ending with ```` ``` ````. The language that should be used to interpret the code chunk (R in our case) is provided in the `{}`. In RStudio you can manually type in the start and end elements of a code chunk, or use the apprpriate keyboard shortcut for your operating system (option-command-I on the Mac).
+
+You can execute individual lines of R code or individual code blocks without rendering the whole document. 
+
+* *command-enter* (Mac) to execute the current line of code or the selected lines of code
+* *command-shift-enter* (Mac) to execute the current chunk/block of code
+
+Here is a sample code block in which three mathematical calculations are performed (including a comment that highlights that commenting within code blocks is a good practice)
+
+```{r}
+# Use comments to add text or descriptive info to a code cell.
+
+196 * 786527
+261876 / 19871987
+3**88
+```
+
+```{r}
+# using print functions instead of default output for calculation results
+
+print(196 * 786527)
+print(261876 / 19871987)
+print(3**88)
+```
+
+*How is the output of these two variations on the calculation different from the output from the comparable calculations in the Jupyter Notebook?*
+
+> **R Markdown rendering of code chunks is line by line, with the default behavior of displaying first the R command and then the output of that command as output blocks in the editor, and output cells in the generated output file**
+
+You can modify this default behavior by using options in the start of the code chunk:
+
+the `echo=FALSE` option:
+
+```{r, echo=FALSE}
+# Show only the output, not the commands that generated the output using the "echo=FALSE" option
+
+196 * 786527
+261876 / 19871987
+3**88
+```
+
+the `collapse=TRUE` option:
+
+```{r, collapse=TRUE}
+# Collapse the input and output into a single output cell with the "collapse=TRUE" option
+
+196 * 786527
+261876 / 19871987
+3**88
+```
+
+the `results=hide` option:
+
+```{r, results='hide'}
+# Just show the source code without the output using the "results='hide'" option
+
+196 * 786527
+261876 / 19871987
+3**88
+```
+
+combining the `results=hide, echo=FALSE` options: ![](images/invisible-g3fab53516_640.png){ height=150px }
+
+```{r, results='hide', echo=FALSE}
+# Don't display either the source code or output by combining the "results='hide'" and "echo=FALSE" options
+
+196 * 786527
+261876 / 19871987
+3**88
+```
+
+
+
+### Variables and Sequence of Execution
+
+Like Jupyter notebooks the sequence of execution controls the values of R objects at any time in your work with your R Markdown document. **But**, when you `knit` your R Markdown document into a rendered file, the source document is always executed anew from beginning to end, ignoring any changes you have made by executing individual lines or chunks of code. 
+
+### Inserting R Variables and Code in Markdown Blocks
+
+One powerful capability that R Markdown provides is the insertion of values of R variables or the output of R commands into Markdown chunks. 
+
+```{r}
+# Assigning output to variables
+
+a <- 196 * 786527
+b <- 261876 / 19871987
+c <- 3**88
+
+```
+
+Insertion of values associated with variables or executing R code within Markdown chunks is done by placing the variable or R code into an embedded execution block within your Markdown. The execution block is wrapped in back-tick characters (`` ` ``) and start with the language interpreter that should be used. For example `` ` `` r 2+3 `` ` `` (without the space before the `r`) which is rendered as: `r 2+3`. 
+
+Embedding R variables follows this model as well as with:
+
+* Variable `a` = `r a`
+* Variable `b` = `r b`
+* Variable `c` = `r c`
+
+
+## Working with Real Data
+
+For this demo we will be using data from Albuquerque's open data portal. The dataset is the *City Checkbook*, which includes a list of invoices paid to vendors:
+
+> City of Albuquerque, Accounts Payable Section, Accounting Division of the Department of Financial and Administrative > Services (2021). _City Checkbook_ <http://data.cabq.gov/government/vendorcheckbook/VendorCheckBookCABQ-en-us.csv>
+
+What follows is a rough outline or sketch of an example workflow for developing and reporting an analysis using R and R Markdown. This document is a demonstration and should not be taken as a robust analysis of spending trends by the city of Albuquerque during the COVID pandemic.
+
+Generally, we will address the following questions:
+
+1. Did city spending increase of decrease during the pandemic, compared to the year before?
+1. Were specific vendors impacted more than others?
+1. Did the pandemic affect the interval between when an invoice was billed and when it was paid?
+
+## Methods
+
+In this section we would describe methods relative to:
+
+* sampling
+* data collection
+* data cleaning or quality assurance
+* analysis
+
+The notebook environment allows us to demonstrate some of these processes interactively (and openly!).
+
+### Importing R Packages
+
+Most R analyses depent upon functionality provided by packages outside of the base R environment. We can import the `tidyverse` library that contains the additional functionality required by this sample analysis by executing the `library(tidyverse)` command. 
+
+```{r, message=FALSE}
+# the inclusion of the "message=FALSE" option suppresses the display/generation of the output
+# of the library function
+library(tidyverse)
+```
+
+### Import the data
+
+We can then import the dataset from Albuquerque's data site. In this case we retain the messages generated by the execution of the `read_csv` command so we can see the variable names and types for the imported CSV file. 
+
+```{r}
+# use the read_csv function to read the locally stored CSV file
+ckbk <- read_csv("./data/abq_vendor_data_2019-2021.csv")
+```
+
+### Looking at the data in table form
+
+R provides a useful default display of the resulting table within the editor.
+
+```{r}
+ckbk
+```
+
+But we will want to use one of the available additional packages for rendering the imported *dataframe* as a nice printed table. As highlighted in the [tables](https://rmarkdown.rstudio.com/lesson-7.html)section of the [R Markdown tutorial](https://rmarkdown.rstudio.com/lesson-1.html) from RStudio there are a number of packages you might use. We will be using `knitr`'s `kable` package to generate a table for our HTML document. 
+
+First we need to import the `kable` package
+
+```{r}
+library(knitr)
+```
+
+... and then we can use it to render the imported data as a nicely formatted HTML table
+
+```{r, echo=FALSE, results="asis"}
+kable(ckbk[1:5,1:3], caption="A sample of the rows and columns from the ABQ dataset")
+```
+
+### Generating some statistics
+
+
+
+
+
+
