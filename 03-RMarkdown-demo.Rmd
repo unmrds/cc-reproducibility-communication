@@ -192,8 +192,63 @@ kable(ckbk[1:5,1:3], caption="A sample of the rows and columns from the ABQ data
 
 ### Generating some statistics
 
+We often want to calculate descriptive statistics for some or all of our variables. We can use variations of the `summarise` function to generate selected statistics for numeric data columns. 
+
+```{r, result="asis"}
+summaryStats <- ckbk %>% 
+  select("INVOICE AMOUNT", "billed_duration") %>% 
+  summarise_all(list(mean = mean, sd = sd, min = min, max = max))
+kable(t(summaryStats))
+```
+
+We can also calculate descriptive statistics for groups of data.
+
+Summary by Invoice Year in a table
+
+```{r, result='asis'}
+# summarize by invoice year
+summaryStatsByYear <- ckbk %>% 
+  select("invoice_year","INVOICE AMOUNT", "billed_duration") %>% 
+  group_by(invoice_year) %>% 
+  summarise(ct_invoices = n(),
+            total_invoices = sum(`INVOICE AMOUNT`))
+kable(summaryStatsByYear)
+
+```
+Summary by Invoice Year in a graph
+
+```{r, echo=FALSE}
+yearPlot <- ggplot(data=summaryStatsByYear, aes(x=invoice_year, y=total_invoices)) +
+  geom_bar(stat="identity")
+yearPlot
+```
 
 
 
+Summary by Vendor
+
+```{r, result='asis', warning=FALSE, echo=FALSE}
+# summarize by vendor
+summaryStatsByVendor <- ckbk %>% 
+  select(NAME1,"INVOICE AMOUNT", "billed_duration") %>% 
+  mutate("Vendor" = NAME1) %>% 
+  group_by(Vendor) %>% 
+  summarise(ct_inv = n(),
+            sum_inv = sum(`INVOICE AMOUNT`),
+            sum_ttp = sum(billed_duration),
+            avg_inv = round(mean(`INVOICE AMOUNT`)),
+            avg_ttp = round(mean(billed_duration)))
+kable(summaryStatsByVendor[1:20,], caption="Sample of vendor statistics")
+
+```
+
+From this summary by vendor we can extract and present subsets of the vendors that meet specific criteria. For example, selecting and printing the top 20 vendors by total amount invoiced. 
+
+```{r, message=FALSE}
+top20Vendors <- summaryStatsByVendor %>% 
+  arrange(desc(sum_inv)) %>% 
+  top_n(20)
+kable(top20Vendors)
+```
 
 
