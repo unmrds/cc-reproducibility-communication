@@ -1,0 +1,129 @@
+---
+title: "03-R Markdown-demo"
+author: "Karl Benedict"
+date: "3/3/2022"
+output: 
+  html_document:
+    highlight: tango
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# R Markdown and R
+
+## Abstract
+
+Workshop tutorial with hands-on demonstration of Markdown, RStudio interface, and R Markdown structure and rendering.
+
+*keywords*: markdown, RStudio, R, literate computing
+
+## R Markdown Tips
+
+* [R Markdown Reference Guide](https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf?_ga=2.40279330.1638453532.1646345902-486230548.1646345902)
+
+R Markdown files are written and compiled into the target export format in a two step process. While in Jupyter notebooks you can render individual cells of Markdown text by "executing" them, with R Markdown you develop your R Markdown document and then render the whole document into one or more output files.
+
+R Markdown files are broken into chunks of Markdown and executable code, with the code code starting  with ```` ```{r}```` and ending with ```` ``` ````. The language that should be used to interpret the code chunk (R in our case) is provided in the `{}`. In RStudio you can manually type in the start and end elements of a code chunk, or use the apprpriate keyboard shortcut for your operating system (option-command-I on the Mac).
+
+You can execute individual lines of R code or individual code blocks without rendering the whole document. 
+
+* *command-enter* (Mac) to execute the current line of code or the selected lines of code
+* *command-shift-enter* (Mac) to execute the current chunk/block of code
+
+Here is a sample code block in which three mathematical calculations are performed (including a comment that highlights that commenting within code blocks is a good practice)
+
+```{r}
+# Use comments to add text or descriptive info to a code cell.
+
+196 * 786527
+261876 / 19871987
+3**88
+```
+
+```{r}
+# using print functions instead of default output for calculation results
+
+print(196 * 786527)
+print(261876 / 19871987)
+print(3**88)
+```
+
+*How is the output of these two variations on the calculation different from the output from the comparable calculations in the Jupyter Notebook?*
+
+> **R Markdown rendering of code chunks is line by line, with the default behavior of displaying first the R command and then the output of that command as output blocks in the editor, and output cells in the generated output file**
+
+You can modify this default behavior by using options in the start of the code chunk:
+
+the `echo=FALSE` option:
+
+```{r, echo=FALSE}
+# Show only the output, not the commands that generated the output using the "echo=FALSE" option
+
+196 * 786527
+261876 / 19871987
+3**88
+```
+
+the `collapse=TRUE` option:
+
+```{r, collapse=TRUE}
+# Collapse the input and output into a single output cell with the "collapse=TRUE" option
+
+196 * 786527
+261876 / 19871987
+3**88
+```
+
+the `results=hide` option:
+
+```{r, results='hide'}
+# Just show the source code without the output using the "results='hide'" option
+
+196 * 786527
+261876 / 19871987
+3**88
+```
+
+combining the `results=hide, echo=FALSE` options: ![](images/invisible-g3fab53516_640.png){ height=150px }
+
+```{r, results='hide', echo=FALSE}
+# Don't display either the source code or output by combining the "results='hide'" and "echo=FALSE" options
+
+196 * 786527
+261876 / 19871987
+3**88
+```
+
+
+
+### Variables and Sequence of Execution
+
+Like Jupyter notebooks the sequence of execution controls the values of R objects at any time in your work with your R Markdown document. **But**, when you `knit` your R Markdown document into a rendered file, the source document is always executed anew from beginning to end, ignoring any changes you have made by executing individual lines or chunks of code. 
+
+### Inserting R Variables and Code in Markdown Blocks
+
+One powerful capability that R Markdown provides is the insertion of values of R variables or the output of R commands into Markdown chunks. 
+
+```{r}
+# Assigning output to variables
+
+a <- 196 * 786527
+b <- 261876 / 19871987
+c <- 3**88
+
+```
+
+Insertion of values associated with variables or executing R code within Markdown chunks is done by placing the variable or R code into an embedded execution block within your Markdown. The execution block is wrapped in back-tick characters (`` ` ``) and start with the language interpreter that should be used. For example `` ` `` r 2+3 `` ` `` (without the space before the `r`) which is rendered as: `r 2+3`. 
+
+Embedding R variables follows this model as well as with:
+
+* Variable `a` = `r a`
+* Variable `b` = `r b`
+* Variable `c` = `r c`
+
+
+
+
+
