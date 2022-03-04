@@ -2,7 +2,8 @@
 title: "03-R Markdown-demo"
 author: "Karl Benedict"
 date: "3/3/2022"
-output: 
+output:
+  pdf_document: default
   html_document:
     highlight: tango
 ---
